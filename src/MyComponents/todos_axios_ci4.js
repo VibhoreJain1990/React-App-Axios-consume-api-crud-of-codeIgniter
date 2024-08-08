@@ -3,6 +3,7 @@ import axios from 'axios';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faEye, faTrashAlt, faPlusCircle } from '@fortawesome/free-solid-svg-icons';
 import Modal from './ShowModal.js';
+import LogoutButton from '../Logout.js';
 
 const Todos = () => {
     const [todos, setTodos] = useState([]);
@@ -47,7 +48,12 @@ const Todos = () => {
         // Fetch todos from the API
         const fetchTodos = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/get_todos'); // Replace with your API URL
+                const token = localStorage.getItem('jwtToken');
+                const response = await axios.get('http://localhost:8080/get_todos',{
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Include the bearer token
+                    }
+                }); // Replace with your API URL
                 setTodos(response.data);
                 setLoading(false);
             } catch (err) {
@@ -138,7 +144,7 @@ const Todos = () => {
     return (
         <>
             <div className='mt-3'>
-                <h1>Todos
+                <h1 style={{"display":"inline"}}>Todos
                     <FontAwesomeIcon
                         icon={faPlusCircle}
                         onClick={() => handleAddNewClick()}
@@ -146,6 +152,7 @@ const Todos = () => {
                     />
                     <span onClick={() => handleAddNewClick()} style={{ cursor: 'pointer' }}>Add New Item</span>
                 </h1>
+            <LogoutButton/>
                 <ul>
                     {todos.map(todo => (
                         <li key={todo.id}>

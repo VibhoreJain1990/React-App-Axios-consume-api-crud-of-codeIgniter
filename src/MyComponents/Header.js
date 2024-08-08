@@ -35,6 +35,9 @@ export default function Header(props) {
           </li>          
           <li className="nav-item">
             <Link className="nav-link" to="/todos_get">Todos Axios CI4</Link>
+          </li> 
+          <li className="nav-item">
+            <Link className="nav-link" to="/login">(CI4 Login)</Link>
           </li>          
         </ul>
         {props.searchBar? 
