@@ -54,7 +54,9 @@ const Todos = () => {
                         Authorization: `Bearer ${token}`  // Include the bearer token
                     }
                 }); // Replace with your API URL
-                setTodos(response.data);
+                // Reverse the data before setting it to state
+                const reversedTodos = response.data.reverse();
+                setTodos(reversedTodos);
                 setLoading(false);
             } catch (err) {
                 setCustomError('Failed to fetch todos');
@@ -82,9 +84,14 @@ const Todos = () => {
         else if (editDescription.length < 5) { setCustomError('Description should be at least 5 characters long'); }
         else {
             try {
+                const token = localStorage.getItem('jwtToken');
                 await axios.put(`http://localhost:8080/update_todo/${editingTodo}`, {
                     title: editTitle,
                     description: editDescription,
+                },{
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Include the bearer token
+                    }
                 });
                 setTodos(todos.map(todo =>
                     todo.id === editingTodo
@@ -105,9 +112,14 @@ const Todos = () => {
         else if (addDescription.length < 5) { setCustomError('Description should be at least 5 characters long'); }
         else {
             try {
+                const token = localStorage.getItem('jwtToken');
                 const response = await axios.post(`http://localhost:8080/create_todo`, {
                     title: addTitle,
                     description: addDescription,
+                },{
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Include the bearer token
+                    }
                 });
 
                 if (response.data.status === 'success') {
@@ -131,8 +143,14 @@ const Todos = () => {
     const handleDeleteClick = async (todoId) => {
         if (window.confirm("Do you really want to delete?")) {
             try {
-                await axios.delete(`http://localhost:8080/delete_todo/${todoId}`);
+                const token = localStorage.getItem('jwtToken');
+                await axios.delete(`http://localhost:8080/delete_todo/${todoId}`,{
+                    headers: {
+                        Authorization: `Bearer ${token}`  // Include the bearer token
+                    }
+                });
                 setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== todoId));
+                setCustomError('');
             } catch (err) {
                 setCustomError(`Failed to delete todo: ${err.message}`);
             }

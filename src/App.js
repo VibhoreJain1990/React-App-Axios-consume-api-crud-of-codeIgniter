@@ -5,8 +5,6 @@ import { Footer } from './MyComponents/Footer.js';
 import { AddTodo } from './MyComponents/AddTodo.js';
 import { useState, useEffect } from 'react';
 import { About } from './MyComponents/About.js';
-
-//import { MyComponent } from './MyComponents/Mycomponentvj.js';
 import {
   BrowserRouter as Router,
   Routes,
@@ -24,11 +22,35 @@ import { Navigate } from 'react-router-dom';
 const ProtectedRoute = ({ element }) => {
   return isAuthenticated() ? element : <Navigate to="/login" />;
 };
+
 const isAuthenticated = () => {
   const token = localStorage.getItem('jwtToken');
-  // Add more logic here if needed, like checking token expiry
-  return !!token;
+
+  if (!token) {
+    return false;
+  }
+
+  try {
+    const decodedToken = JSON.parse(atob(token.split('.')[1])); // Decode the JWT payload
+    const currentTime = Math.floor(Date.now() / 1000); // Current time in seconds
+
+    // Check if the token is expired
+    if (decodedToken.exp < currentTime) {
+      localStorage.removeItem('jwtToken'); // Optionally remove expired token
+      //alert('if');
+      return false;
+    }
+
+    return true;
+  } catch (error) {
+    // Handle decoding errors or invalid tokens
+    console.error('Token decoding error:', error);
+    //alert('catch');
+    localStorage.removeItem('jwtToken'); // Optionally remove invalid token
+    return false;
+  }
 };
+
 
 //import './MyComponents/footer.css';//this way also we can add css
 
@@ -41,10 +63,6 @@ function App() {
     initTodo = JSON.parse(localStorage.getItem("todos"));
   }
   const onDelete = (todo) => {
-    //console.log("I am on delete of todo", todo);
-    //deleting this way in react does not work 
-    //let index=todos.indexOf(todo);
-    //todos.splice(index,1);//normal js to delete current todo element. 
     setTodos(todos.filter((e) => {
       return e !== todo;
     }))

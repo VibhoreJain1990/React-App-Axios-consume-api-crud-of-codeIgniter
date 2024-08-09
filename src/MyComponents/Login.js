@@ -31,7 +31,7 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container" style={{"width":"600px","margin-left":"100px","margin-top":"10px"}}>
+    <div className="login-container" style={{"width":"600px","marginLeft":"100px","marginTop":"10px"}}>
       <h2>Login</h2>
       <form onSubmit={handleLogin}>
   <div className="form-group">
