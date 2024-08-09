@@ -7,7 +7,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 
 	return (
 		<div
-			onClick={onClose}
+			//onClick={onClose}
 			style={{
 				position: "fixed",
 				top: 0,
@@ -23,7 +23,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 			<div
 				style={{
 					background: "white",
-					height: 250,
+					height: 350,
 					width: 540,
 					margin: "auto",
 					padding: "2%",
@@ -32,6 +32,7 @@ const Modal = ({ isOpen, onClose, children }) => {
 					boxShadow: "2px solid black",
 				}}
 			>
+				<span onClick={onClose} style={{color:"red"}}>(Close X)</span>
 				{children}
 			</div>
 		</div>

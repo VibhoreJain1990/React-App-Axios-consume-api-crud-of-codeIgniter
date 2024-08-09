@@ -6,6 +6,7 @@ import Modal from './ShowModal.js';
 import LogoutButton from '../Logout.js';
 import DataTable from 'datatables.net-dt';
 import 'datatables.net-dt/css/dataTables.dataTables.min.css';  // Import DataTables CSS
+// Import custom CSS
 import './customDataTableStyles.css'; 
 
 const Todos = () => {
@@ -75,14 +76,15 @@ const Todos = () => {
 
     useEffect(() => {
         if (tableRef.current) {
+            // Initialize DataTable if not already initialized
             if (!dataTableRef.current) {
                 dataTableRef.current = new DataTable(tableRef.current, {
                     language: {
-                        lengthMenu: 'Show _MENU_ entries'
+                        lengthMenu: 'Show _MENU_ entries' // Customize the text here
                     }
                 });
             } else {
-                // Update DataTable with new todos
+                // Redraw DataTable with updated todos
                 dataTableRef.current.clear();
                 dataTableRef.current.rows.add(todos);
                 dataTableRef.current.draw();
@@ -164,8 +166,6 @@ const Todos = () => {
 
                     setTodos(prevTodos => [newTodo, ...prevTodos ]);//i want to show the newly added todo at top
                     handleClose(); // Use handleClose to reset state
-                    window.location.reload();//vj - data-table was not loading after insert, so 
-                    //so i have forced to do it, untill i got better way without reloading whole page. 
                 } else {
                     setCustomError('Failed to add todo: ' + response.data.message);
                 }
@@ -187,8 +187,6 @@ const Todos = () => {
                 // Update state and let DataTable re-render
                 setTodos((prevTodos) => prevTodos.filter(todo => todo.id !== todoId));
                 setCustomError('');
-                window.location.reload();//vj - data-table was not loading after insert, so 
-                //so i have forced to do it, untill i got better way without reloading whole page. 
             } catch (err) {
                 setCustomError(`Failed to delete todo: ${err.message}`);
             }
@@ -208,9 +206,7 @@ const Todos = () => {
                     />
                     <span onClick={() => handleAddNewClick()} style={{ cursor: 'pointer' }}>Add New Item</span>
                 </h1>
-
                 <LogoutButton/>
-
                 <table ref={tableRef} className='display'>
                     <thead>
                         <tr>
@@ -222,8 +218,8 @@ const Todos = () => {
                     <tbody>
                         {todos.map(todo => (
                             <tr key={todo.id}>
-                                <td><strong style={{color:"skyblue"}}>{todo.title}</strong></td>
-                                <td style={{color:"pink"}}>{todo.description}</td>
+                                <td><strong>{todo.title}</strong></td>
+                                <td>{todo.description}</td>
                                 <td>
                                     <FontAwesomeIcon
                                         icon={faEye}
@@ -245,35 +241,6 @@ const Todos = () => {
                         ))}
                     </tbody>
                 </table>
-
-                {addingTodo && (
-                    <div style={{
-                        textAlign: "center",
-                        display: "block",
-                        padding: 30,
-                        margin: "auto",
-                    }} >
-                        <Modal isOpen={open} onClose={handleClose}>
-                        <>
-                        <h2>Add Todo</h2><br />
-                        <input
-                            type="text"
-                            value={addTitle}
-                            onChange={(e) => setAddTitle(e.target.value)}
-                            placeholder="Title"
-                        /><br /><br />
-                        <textarea
-                            value={addDescription}
-                            onChange={(e) => setAddDescription(e.target.value)}
-                            placeholder="Description"
-                        /><br />
-                        <button onClick={handleAddSaveClick} className='btn btn-primary'>Create</button>&nbsp;&nbsp;
-                        <button onClick={handleClose} className='btn btn-danger'>Cancel</button>
-                        <p className="text-danger">{customError}</p>
-                        </>
-                        </Modal>
-                    </div>
-                )}
 
                 {editingTodo && (
                     <div style={{
@@ -298,6 +265,34 @@ const Todos = () => {
                             placeholder="Description"
                         /><br />
                         <button onClick={handleUpdateSaveClick} className='btn btn-primary'>Update</button>&nbsp;&nbsp;
+                        <button onClick={handleClose} className='btn btn-danger'>Cancel</button>
+                        <p className="text-danger">{customError}</p>
+                        </>
+                        </Modal>
+                    </div>
+                )}
+                {addingTodo && (
+                    <div style={{
+                        textAlign: "center",
+                        display: "block",
+                        padding: 30,
+                        margin: "auto",
+                    }} >
+                        <Modal isOpen={open} onClose={handleClose}>
+                        <>
+                        <h2>Add Todo</h2><br />
+                        <input
+                            type="text"
+                            value={addTitle}
+                            onChange={(e) => setAddTitle(e.target.value)}
+                            placeholder="Title"
+                        /><br /><br />
+                        <textarea
+                            value={addDescription}
+                            onChange={(e) => setAddDescription(e.target.value)}
+                            placeholder="Description"
+                        /><br />
+                        <button onClick={handleAddSaveClick} className='btn btn-primary'>Create</button>&nbsp;&nbsp;
                         <button onClick={handleClose} className='btn btn-danger'>Cancel</button>
                         <p className="text-danger">{customError}</p>
                         </>
